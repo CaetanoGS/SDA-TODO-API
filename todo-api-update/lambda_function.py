@@ -1,7 +1,7 @@
 import json
 import boto3
 from database.todo_db import table
-from schemas.todo_schemas import TodoUpdateSchema
+from schemas.todo_schemas import TodoUpdate, TodoResponse
 from pydantic import ValidationError
 from json.decoder import JSONDecodeError
 from botocore.exceptions import ClientError
@@ -28,7 +28,7 @@ def lambda_handler(event, context):
                 })
             }
             
-        todo_schema = TodoUpdateSchema(**json.loads(event.get('body', None)))
+        todo_schema = TodoUpdate(**json.loads(event.get('body', None)))
         response = table.update_item(
             Key={"id": todo_id},
             UpdateExpression="SET title = :title, description = :description ",
@@ -40,18 +40,22 @@ def lambda_handler(event, context):
         )
         return {
             'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
-            'body': json.dumps({
-                "id": todo_id,
-                "title": todo_schema.title,
-                "description": todo_schema.description
-            })
+            'body': json.dumps(
+                TodoResponse(
+                    **{
+                        "id": todo_id,
+                        "title": todo_schema.title,
+                        "description": todo_schema.description
+                    }
+                ).dict()
+            )
         }
             
     except (JSONDecodeError, ValidationError, ClientError) as e:
         return {
             'statusCode': 400,
             'body': json.dumps({
-                "error": f"There was an error while updating the To-Do object. ---> {e}"
+                "error": f"There was an error while updating the To-Do object."
             })
         }
 
