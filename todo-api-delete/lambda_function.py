@@ -19,15 +19,15 @@ def lambda_handler(event, context):
         response = table.delete_item(Key={"id": todo_id})
         
         return {
-            'statusCode': 204,
-            'body': json.dumps('')
+            'statusCode': 200,
+            'body': json.dumps({"message": "To-Do object deleted successfully."})
         }
             
     except ClientError as e:
         return {
             'statusCode': 400,
             'body': json.dumps({
-                "error": f"There was an error while deleting the To-Do object. ---> {e}"
+                "error": f"There was an error while deleting the To-Do object."
             })
         }
 
