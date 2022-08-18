@@ -1,6 +1,6 @@
 # SDA-TODO-API
 
-This is a cloud application that was developed for the SDA interview process. The aim of the application is to provide a simple API that allows the clients to perform the whole CRUD.
+The aim of the application is to provide a simple API that allows the clients to perform the whole CRUD.
 The application was developed with the following cloud tools provided by AWS:
 
 - API Geteway
